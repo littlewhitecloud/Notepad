@@ -17,9 +17,8 @@ class Window(Tk):
         self.geometry("1275x665")
         self.iconbitmap("notepad.ico")
 
-        self.theme = (
-            "dark" if isDark() else "light"
-        )  # TODO: move it to the settings later
+        self.theme = "dark" if isDark() else "light"
+        # TODO: move it to the settings later
 
         set_theme(self.theme)
         if self.theme == "dark":

@@ -1,7 +1,7 @@
-from tkinter import Button, Event, Frame, Misc, Text
+from tkinter import Event, Frame, Misc, Text
 from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showerror
-from tkinter.ttk import Label, Scrollbar, Separator
+from tkinter.ttk import Label, Scrollbar, Separator, Button, Style
 
 from darkdetect import isDark
 
@@ -24,13 +24,19 @@ class EditMenubar(Frame):
     ) -> None:
         super().__init__(master, background=background)
 
+        self.style = Style()
+        self.style.configure(
+            "Menu.TButton",
+            background=self.master.backgroundcolor,
+        )
+
         self.filebutton = Button(self, text="File")
         self.editbutton = Button(self, text="Edit")
         self.viewbutton = Button(self, text="View")
 
         for target_button in (self.filebutton, self.editbutton, self.viewbutton):
             target_button.pack(fill="x", side="left", padx=5, pady=2)
-            target_button.config(background=self.master.backgroundcolor, relief="flat")
+            target_button.config(style="Menu.TButton")
 
 
 class Editor(Frame):
@@ -44,12 +50,13 @@ class Editor(Frame):
         self.changed = False
         self.filepath = ""
 
-        self.backgroundcolor = "#020202" if isDark() else "#F8F8F8"
+        self.backgroundcolor = "#020202" if isDark() else "#FAFAFA"
         self.foregroundcolor = "#CCCCCC" if isDark() else "#595959"
+        self.themecolor = "#2A2A2A" if isDark() else "white"
 
         # Create the widgets
-        self.editmenu = EditMenubar(self, background=self.backgroundcolor)
-        self.editmenu.pack(side="top", fill="x")
+        # self.editmenu = EditMenubar(self, background=self.backgroundcolor)
+        # self.editmenu.pack(side="top", fill="x")
 
         self.edit = Frame(self)
         self.text = Text(
@@ -115,7 +122,8 @@ class Editor(Frame):
         """update the statusbar"""
         self.ln, self.col = self.text.index("insert").split(".")
         self.insertindex.config(text="Ln %s, Col %s" % (self.ln, int(self.col) + 1))
-        self.changed = True
+        if event:
+            self.changed = True
 
     def savefile(self, event: Event | None = None, filepath: str = "") -> None:
         """Save file to target filepath"""
